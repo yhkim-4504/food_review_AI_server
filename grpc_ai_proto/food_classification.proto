@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+service FoodAi {
+    rpc CheckGpuStatus (Empty) returns (GpuStatus) {}
+    rpc PredictFoodImage (FoodImage) returns (PredictionResult) {}
+}
+
+message Empty {
+
+}
+
+message GpuStatus {
+  bool status = 1;
+}
+
+message FoodImage {
+  bytes image = 1;
+}
+
+message PredictionResult {
+    uint32 food_type = 1;
+    float probability = 2;
+}
