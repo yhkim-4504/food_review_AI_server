@@ -20,13 +20,16 @@ import grpc
 import food_classification_pb2
 import food_classification_pb2_grpc
 
-
+from time import sleep
 class Greeter(food_classification_pb2_grpc.FoodAiServicer):
     def CheckGpuStatus(self, request, context):
+        print('CheckGpu grpc')
+        sleep(3)
         return food_classification_pb2.GpuStatus(status=True)
     
     def PredictFoodImage(self, request, context):
-        print(request)
+        print('PredictFoodImage grpc')
+        sleep(3)
         return food_classification_pb2.PredictionResult(food_type=1, probability=0.97)
 
 
@@ -35,7 +38,7 @@ def serve():
     port = '50051'
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     food_classification_pb2_grpc.add_FoodAiServicer_to_server(Greeter(), server)
-    server.add_insecure_port('[::]:' + port)
+    server.add_insecure_port('127.0.0.1:' + port)  # localhost
     server.start()
     print("Server started, listening on " + port)
     server.wait_for_termination()
