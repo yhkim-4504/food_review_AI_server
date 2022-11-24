@@ -2,7 +2,7 @@
 """Client and server classes corresponding to protobuf-defined services."""
 import grpc
 
-from grpc_ai_server import food_classification_pb2 as food__classification__pb2
+from . import food_classification_pb2 as food__classification__pb2
 
 
 class FoodAiStub(object):

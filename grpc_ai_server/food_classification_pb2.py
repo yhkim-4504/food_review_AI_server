@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19\x66ood_classification.proto\"\x07\n\x05\x45mpty\"\x1b\n\tGpuStatus\x12\x0e\n\x06status\x18\x01 \x01(\x08\"\x1a\n\tFoodImage\x12\r\n\x05image\x18\x01 \x01(\x0c\":\n\x10PredictionResult\x12\x11\n\tfood_type\x18\x01 \x01(\r\x12\x13\n\x0bprobability\x18\x02 \x01(\x02\x32\x65\n\x06\x46oodAi\x12&\n\x0e\x43heckGpuStatus\x12\x06.Empty\x1a\n.GpuStatus\"\x00\x12\x33\n\x10PredictFoodImage\x12\n.FoodImage\x1a\x11.PredictionResult\"\x00\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19\x66ood_classification.proto\"\x07\n\x05\x45mpty\"\x1b\n\tGpuStatus\x12\x0e\n\x06status\x18\x01 \x01(\x08\"&\n\tFoodImage\x12\n\n\x02id\x18\x01 \x01(\x04\x12\r\n\x05image\x18\x02 \x01(\x0c\":\n\x10PredictionResult\x12\x11\n\tfood_type\x18\x01 \x01(\r\x12\x13\n\x0bprobability\x18\x02 \x01(\x02\x32\x65\n\x06\x46oodAi\x12&\n\x0e\x43heckGpuStatus\x12\x06.Empty\x1a\n.GpuStatus\"\x00\x12\x33\n\x10PredictFoodImage\x12\n.FoodImage\x1a\x11.PredictionResult\"\x00\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'food_classification_pb2', globals())
@@ -25,9 +25,9 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _GPUSTATUS._serialized_start=38
   _GPUSTATUS._serialized_end=65
   _FOODIMAGE._serialized_start=67
-  _FOODIMAGE._serialized_end=93
-  _PREDICTIONRESULT._serialized_start=95
-  _PREDICTIONRESULT._serialized_end=153
-  _FOODAI._serialized_start=155
-  _FOODAI._serialized_end=256
+  _FOODIMAGE._serialized_end=105
+  _PREDICTIONRESULT._serialized_start=107
+  _PREDICTIONRESULT._serialized_end=165
+  _FOODAI._serialized_start=167
+  _FOODAI._serialized_end=268
 # @@protoc_insertion_point(module_scope)

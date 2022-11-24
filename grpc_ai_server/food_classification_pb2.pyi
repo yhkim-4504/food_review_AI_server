@@ -9,10 +9,12 @@ class Empty(_message.Message):
     def __init__(self) -> None: ...
 
 class FoodImage(_message.Message):
-    __slots__ = ["image"]
+    __slots__ = ["id", "image"]
+    ID_FIELD_NUMBER: _ClassVar[int]
     IMAGE_FIELD_NUMBER: _ClassVar[int]
+    id: int
     image: bytes
-    def __init__(self, image: _Optional[bytes] = ...) -> None: ...
+    def __init__(self, id: _Optional[int] = ..., image: _Optional[bytes] = ...) -> None: ...
 
 class GpuStatus(_message.Message):
     __slots__ = ["status"]
