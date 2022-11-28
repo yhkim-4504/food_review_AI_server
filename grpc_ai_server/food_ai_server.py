@@ -8,6 +8,7 @@ from model.predictor import FoodPredictor
 from collections import deque
 from time import sleep
 from torch import cuda
+from datetime import datetime
 
 QUEUE_WAITING_TIME = 0.001
 
@@ -29,18 +30,20 @@ class FoodAiServicer(food_classification_pb2_grpc.FoodAiServicer):
         return food_classification_pb2.GpuStatus(status=status)
     
     def PredictFoodImage(self, request, context):
-        print('PredictFoodImage grpc')
         current_process_id = self.process_id
-        self.process_id += 1
-        self.waiting_queue.append(current_process_id)
 
-        while self.waiting_queue[0] != current_process_id:
+        print(datetime.now(), 'PredictFoodImage grpc', current_process_id)
+        self.waiting_queue.append(current_process_id)
+        self.process_id += 1
+        
+
+        while self.waiting_queue and (self.waiting_queue[0] != current_process_id):
             sleep(QUEUE_WAITING_TIME)
 
         image = cv2.imdecode(np.frombuffer(request.image, np.uint8), cv2.IMREAD_COLOR)
         result = self.food_predictor.inference(image)
         self.waiting_queue.popleft()
-        print(current_process_id, 'Done')
+        print(datetime.now(), current_process_id, 'Done', self.waiting_queue)
 
         return food_classification_pb2.PredictionResult(food_type=result['index'], probability=result['prob'])
 
@@ -48,10 +51,12 @@ class FoodAiServicer(food_classification_pb2_grpc.FoodAiServicer):
 
 def serve():
     port = '50051'
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=8))
     food_classification_pb2_grpc.add_FoodAiServicer_to_server(FoodAiServicer(), server)
-    server.add_insecure_port('0.0.0.0:' + port)  # localhost
-    #server.add_insecure_port('[::]:' + port)  # localhost
+    #server.add_insecure_port('0.0.0.0:' + port)  # localhost
+    server.add_insecure_port('[::]:' + port)  # localhost
     server.start()
     print("Server started, listening on " + port)
     server.wait_for_termination()
+
+serve()
