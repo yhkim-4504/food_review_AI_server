@@ -1,6 +1,7 @@
 import numpy as np
 import cv2
 import grpc
+import threading
 from concurrent import futures
 from . import food_classification_pb2
 from . import food_classification_pb2_grpc
@@ -17,6 +18,7 @@ class FoodAiServicer(food_classification_pb2_grpc.FoodAiServicer):
     food_predictor = FoodPredictor('./model/Base2_chkpoint_jit_script.pt', (256, 256), 'cuda:0')
     waiting_queue = deque()
     process_id = 0
+    thread_lock = threading.Lock()
     print('Done.')
 
     def CheckGpuStatus(self, request, context):
@@ -30,11 +32,12 @@ class FoodAiServicer(food_classification_pb2_grpc.FoodAiServicer):
         return food_classification_pb2.GpuStatus(status=status)
     
     def PredictFoodImage(self, request, context):
-        current_process_id = self.process_id
+        with self.thread_lock:
+            current_process_id = self.process_id
 
-        print(datetime.now(), 'PredictFoodImage grpc', current_process_id)
-        self.waiting_queue.append(current_process_id)
-        self.process_id += 1
+            print(datetime.now(), 'PredictFoodImage grpc', current_process_id)
+            self.waiting_queue.append(current_process_id)
+            self.process_id += 1
         
 
         while self.waiting_queue and (self.waiting_queue[0] != current_process_id):
@@ -42,7 +45,9 @@ class FoodAiServicer(food_classification_pb2_grpc.FoodAiServicer):
 
         image = cv2.imdecode(np.frombuffer(request.image, np.uint8), cv2.IMREAD_COLOR)
         result = self.food_predictor.inference(image)
-        self.waiting_queue.popleft()
+
+        with self.thread_lock:
+            self.waiting_queue.popleft()
         print(datetime.now(), current_process_id, 'Done', self.waiting_queue)
 
         return food_classification_pb2.PredictionResult(food_type=result['index'], probability=result['prob'])
